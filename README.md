@@ -4,7 +4,7 @@ Boteng Yao, Zixiao Wang, Zhaopeng Xu
 # 1. Introduction
 <div style="text-align: justify">
 The goal of our project is to recognize cow identity on the farm based on the pattern of their back. We leveraged Azure Cloud and edge computing to identify the cow ID. Our Cow Recognition Platform provides single image prediction service and real time video processing service. The system is separated by the cloud computing part and the edge computing part. Our platform can serve farmers from all over the world. We can also provide customized service based on the farmer’s demand. 
-<div>
+</div>
 
 # 2. System Design
 This Chapter will mainly discuss the design of the real time video process service and global single image prediction service.
