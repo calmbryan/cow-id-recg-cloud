@@ -14,7 +14,7 @@ for ext in ['*.jpg']:
         img_array.append(img)
 
 print(len(img_array))
-out = cv.VideoWriter('mix_video.avi',cv.VideoWriter_fourcc(*'DIVX'), 3, (1486, 1230))
+out = cv.VideoWriter('mix_video2.avi',cv.VideoWriter_fourcc(*'DIVX'), 3, (1486, 1230))
  
 for i in range(len(img_array)):
     if (img.shape[0], img.shape[1]) != (1486, 1230):

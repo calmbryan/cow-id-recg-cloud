@@ -20,7 +20,7 @@ spec:
         resources:
           requests: # minimum resources required
             cpu: 500m
-            memory: 64Mi
+            memory: 512Mi
           limits: # maximum resources allocated
-            cpu: 1000m
-            memory: 256Mi
+            cpu: 800m
+            memory: 1024Mi

@@ -13,7 +13,7 @@ from predict import initialize, predict_image
 import pymongo
 import datetime
 
-account_name = "cowimagestorage"
+account_name = ""                #Storage
 account_key = ""
 
 block_blob_service = BlockBlobService(
@@ -80,6 +80,7 @@ def sampling(video, path_output_dir=None):
 
         while vidcap.isOpened():
             success, image = vidcap.read()
+            print(image.shape)
             if success:
                 # image = image.tobytes()
                 filename = str(count) + ".jpg"

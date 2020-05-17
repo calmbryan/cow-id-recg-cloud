@@ -182,7 +182,10 @@ def update_orientation(image):
                 
 def predict_image(image):
 
-    image = Image.open(image)
+    #image = Image.frombytes("RGB", (1230, 1486), image)
+    image = Image.open(image, "r")
+    #image = Image.fromarray(image)
+    #open(image)
     # image = Image.fromarray(image)
     # log_msg('Predicting image')
     try:

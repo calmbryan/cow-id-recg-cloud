@@ -19,8 +19,8 @@ spec:
         - containerPort: 1000 # the application listens to this port
         resources:
           requests: # minimum resources required
-            cpu: 1000m
-            memory: 128Mi
+            cpu: 600m
+            memory: 1024Mi
           limits: # maximum resources allocated
-            cpu: 2000m
-            memory: 768Mi
+            cpu: 1000m
+            memory: 1536Mi

@@ -14,9 +14,10 @@ jti: jwt的唯一身份标识，主要用来作为一次性token,从而回避重
 """
 #https://jwt.io/
 #http://sonicguo.com/2018/Azure-SignalR-Service-REST-API-Call/
-accesskey = "mlZbIlFbnc0tUFbdIZ300LMaVuzEMGys5Cyg4/mS+/w="
+accesskey = "" #need to change
+
 payload = {
-  "exp": 1588016543,
+  "exp": 1598016680,   #2020.8.21
   "aud": "https://cow-signalr.service.signalr.net/api/v1/hubs/imageclassification"
 }
 token = jwt.encode(payload, accesskey, algorithm='HS256')
@@ -27,6 +28,7 @@ print(str(token))
 url = 'https://cow-signalr.service.signalr.net/api/v1/hubs/imageclassification'
 #https://cow-signalr.service.signalr.net/api/v1/health
 #https://<instance-name>.service.signalr.net/api/v1/hubs/<hub-name>
+"""
 myobj = {
         'target': 'newResult',
         'arguments': [{
@@ -34,15 +36,24 @@ myobj = {
             'url': "https://cowstoragecloud.blob.core.windows.net/cow-images/2.jpg"
         }]
     }
+"""
+myobj = {
+        'target': 'newResult',
+        'arguments': [{
+            'predictedTagName': "cow_3",
+            'url': "http://0.0.0.0:1000/5eae45eb9ab00e4d8dc75426"
+        }]
+    }
+
 
 headers = {'Content-type':'application/json','Accept':'application/json', "Authorization": token}
-
 
 def send():
     for i in range(5):
         x = requests.post(url, json=myobj,  headers=headers)
         print(x)
 
+"""
 threadpool = []
 for i in range(10):
     threadpool.append(threading.Thread(target=send))
@@ -51,3 +62,5 @@ for i in range(10):
 for i in range(10):
     threadpool[i].join()
 
+"""
+send()

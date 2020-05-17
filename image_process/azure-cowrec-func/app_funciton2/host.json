@@ -6,7 +6,7 @@
   },
   "extensions": {
     "queues": {
-      "batchSize": 4
+      "batchSize": 8
     }
   }
   }
