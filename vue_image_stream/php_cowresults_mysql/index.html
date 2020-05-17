@@ -1,3 +1,4 @@
+
 <html lang="en">
 
 <head>
@@ -50,30 +51,25 @@
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
       <div class="container">
         <span class="navbar-brand">Realtime Cow Recognition System</span>
-        <span class="navbar-brand">{{ processingRate }} images/sec</span>
+        <span class="navbar-brand"><a href="http://localhost:8081/">Image</a></span>
+        <span class="navbar-brand">{{processingRate}} images/sec</span>ß
       </div>
     </nav>
-<<<<<<< HEAD:vue_image_stream/index copy.html
-    <div class="col">
-      <img :src="videoimage.url" style="max-height: 200px">
-      <div> {{videoimage.predictedTagName}}</div>
+    <div class="jumbotron">
+      <div style="width:300px; margin:0 auto;">
+        <img :src="videoimage.url" style="max-height: 200px; margin:0 auto;">
+        <div>{{videoimage.predictedTagName}}</div>
+      </div>
     </div>
-
-=======
-    <div>
-        <img :src="videoimgres.url" style="max-height: 200px">
-        <div>{{videoimgres.predictedTagName}}</div>
-    </div>
->>>>>>> a2e4c59053d897819d6191abe4aa0c8f5e18ffc0:image_process/azure-cowrec-func/wwwclient/index.html
+    
     <div class="container">
       <transition-group name="slide-fade" tag="div">
         <div class="jumbotron" v-for="result in results" v-bind:key="result.id">
           <div class="row">
 
             <div class="col">
-              <img :src="result.url" style="max-height: 200px">
+              <!--<img :src="result.url" style="max-height: 200px">-->
             </div>
-
             <div class="col">
                 <span v-if="result.predictedTagName === 'cow_1'" class="emoji"> 🐮 cow_1</span>
                 <span v-if="result.predictedTagName === 'cow_10'" class="emoji"> 🐮cow_10</span>
@@ -143,12 +139,11 @@
   <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@3.0.0-preview8.19405.7/dist/browser/signalr.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/5.5.12/Rx.min.js" integrity="sha256-cwLuyVzYZFWhnQzXHj8mufd8tyxMZo1Pso0QNA5cqlI=" crossorigin="anonymous"></script>
-  <script src="priorityqueue.js"> </script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script>
     const app = new Vue({
       el: '#app',
       data: {
-        videoimgres: "",
         results: [],
         processingRate: 0,
         videoimage: ""
@@ -157,43 +152,36 @@
         let count = 0
         const imagesSubject = new Rx.Subject()
         const timeWindow = 6000
-        var dict = {}
-        var queue1 = new PriorityQueue();
-        var queue2 = new PriorityQueue();
-        // console.log(queue1.size())
         imagesSubject.bufferTime(timeWindow, 1000).subscribe(function(results) {
           this.processingRate = (results.length / timeWindow * 1000).toFixed(2)
         }.bind(this))
-        const apiBaseUrl = 'https://cowimageclassify-apim.azure-api.net/cowrecogfunctions';
+        //const apiBaseUrl = 'https://cowrecogfunctions4-apim.azure-api.net/cowrecogfunctions';
+        const apiBaseUrl = 'https://cowrecogfunctions4-apim.azure-api.net/cowrecogfunctions';
         //const apiBaseUrl = 'http://localhost:7071/api';
         //const apiBaseUrl = 'https://cowrecogfunctions.azurewebsites.net/api';
         const connection = new signalR.HubConnectionBuilder()
-          .withUrl(`${apiBaseUrl}?subscription-key=b99c6218b8ae44a7bc9763f7b7458659`)
+          .withUrl(`${apiBaseUrl}?subscription-key=95edf8c584b5436c96def13b92934d34`)
           .withAutomaticReconnect()
           .build()
         connection.on('newResult', function (result) {
+          axios.get('insert_to_mysql.php', {
+           params: {
+             url: result.url,
+             id: result.predictedTagName
+           }
+        })
+        .catch(function (error) {
+           console.log(error);
+        });
           result.id = count++
-          queue1.push(count)
-          //console.log(result.id)
-          curr_result_id = parseInt(result.url.split("/")[4])
-          queue2.push(curr_result_id)
-          dict[curr_result_id] = result
-          while(queue1.size()>0 && queue2.size()>0 && queue2.peek() == queue1.peek()){
-              out_res = queue1.pop();
-              queue2.pop();
-              // console.log(out_res)
-              result = dict[out_res]
-              console.log(out_res)
-              this.videoimgres = result
-              this.results.unshift(result)
-              imagesSubject.next(result)
-       }
+          this.videoimage = result
+          this.results.unshift(result)
+          imagesSubject.next(result)
           if (this.results.length > 50) {
             this.results.length = 50
           }
         }.bind(this))
         this.connection = connection
-
         return connection.start()
       },
       beforeDestroy: function () {
