@@ -173,11 +173,6 @@
           .build()
         connection.on('newResult', function (result) {
           result.id = count++
-<<<<<<< HEAD:vue_image_stream/index copy.html
-          this.videoimage = result
-          this.results.unshift(result)
-          imagesSubject.next(result)
-=======
           queue1.push(count)
           //console.log(result.id)
           curr_result_id = parseInt(result.url.split("/")[4])
@@ -193,7 +188,6 @@
               this.results.unshift(result)
               imagesSubject.next(result)
        }
->>>>>>> a2e4c59053d897819d6191abe4aa0c8f5e18ffc0:image_process/azure-cowrec-func/wwwclient/index.html
           if (this.results.length > 50) {
             this.results.length = 50
           }
