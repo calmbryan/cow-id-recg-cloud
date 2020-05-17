@@ -9,8 +9,8 @@ This Chapter will mainly discuss the design of the real time video process servi
 
 ## 2. 1 Real Time Video Service
 The following picture shows the real time video process design. The system is splitted by two parts, one is cloud computing and the other is edge computing. The cloud will do the complicated deep learning job to predict the cow ID, and the edge computing will sample the video to images, resize images and predict if there is a cow. Then, the resized cow image will upload to the Azure Blob, in the meantime, a message is written to the message queue.  For the message queue, there are two implementations. One is all farms will send the messages to a single queue, and a Function will distribute these messages to the specific prediction Functions. The other approach is each farm is assigned with one queue. Customers can choose their services based on demand.
-![image](https://github.com/calmbryan/cow-id-recg-cloud/blob/master/img/functions.png)
 
+![image](https://github.com/calmbryan/cow-id-recg-cloud/blob/master/img/functions.jpg?raw=true)
 
 ### Cloud Computing Design
 **Keywords**: Azure Message Queue; Azure Functions; SignalR; Azure Blob Storage;
@@ -34,6 +34,8 @@ Finally, when the recognizing work is done and results are sent back from the cl
 ## 2.2 Single Image Prediction Service
 For single image prediction demands, we also implemented a global service image prediction platform which is built on Azure Kubernetes Service. Customers can upload the image from the client side to the cluster and get the prediction results. The image will go first to the first tier service written by Go, then the service will determine which model for the image should be used. Then the results will be returned to the client. The following picture shows the whole system architecture.
 
+![image](https://github.com/calmbryan/cow-id-recg-cloud/blob/master/img/kubernetes.jpg?raw=true)
+
 The first tier consists of four parts of functionalities: hash and upload images, task distribution, update or insert metadata to MySQL cluster, and communication with Redis cache system. 
 First, images with farm IDs are uploaded to the first tier service. The Go program will use SHA1 hash function to hash the image, and it will upload images to different image storage shards based on hash value and farm ID. Second, the first tire will distribute the prediction tasks to different prediction python prediction instances according to the farm ID. 
 
@@ -41,5 +43,6 @@ Then, the returned prediction results with image URL are inserted to MySQL datab
 
 Besides, how about the situation if Redis doesn't cache the results but the image has been uploaded before? The answer is to query the hash key from the MySQL database. A master-slave and write/read splitted MySQL database cluster is built. From the system’s point of view, the query will only go to the read replica of MySQL, which will also reduce the database  pressure.  The replica lag is not a big issue for our system because the system will continue to predict and update the database.
 
-
+The front end is like:
+![image](https://github.com/calmbryan/cow-id-recg-cloud/blob/master/img/frontend.jpg?raw=true)
 
