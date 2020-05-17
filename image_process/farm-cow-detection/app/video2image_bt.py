@@ -16,13 +16,13 @@ import datetime
 #mydb = mongoConn() 
 
 account_name = "cowstoragecloud"                #Storage
-account_key = "wySJgs4UvJqhZUjubvX7lgSiU6/k5qSxUbee2K5hzVPnUq7HsI358u7wzVLQv50b2Kcy66oeIUBB8qESg2C4Tg=="
+account_key = ""
 
 block_blob_service = BlockBlobService(
     account_name=account_name,
     account_key=account_key
 )
-queue = QueueService(connection_string="DefaultEndpointsProtocol=https;AccountName=cowstoragecloud;AccountKey=wySJgs4UvJqhZUjubvX7lgSiU6/k5qSxUbee2K5hzVPnUq7HsI358u7wzVLQv50b2Kcy66oeIUBB8qESg2C4Tg==;EndpointSuffix=core.windows.net")
+queue = QueueService(connection_string="")
 queue.encode_function = QueueMessageFormat.text_base64encode
 
  
